@@ -1,6 +1,6 @@
 # This script is for ANSYS Mechanical. It creates a simple static structural analysis.
 # For future reference: Tree.GetPathToFirstActiveObject() is useful for figuring out references in Ansys Mechanical.
-# Author: Julian Martinsson
+# Author: Julian Martinsson, julianm@chalmers.se
 
 import tempfile
 

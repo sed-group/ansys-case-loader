@@ -1,9 +1,0 @@
-C:\Program Files\ANSYS Inc\v201\Framework\bin\Win64\RunWB2.exe -R case.wbjn
-
-Putting RunWB2 on the path makes it nice and short: RunWB2.exe -R case.wbjn
-
-Don't run it from GitBash (memory issues?). Run from windows command prompt.
-
-
-
-python ansys.py --journal case.wbjn --geometry "C:/Users/julianm/Documents/nx-models/generated_trs/hypercube/ns/trs_nsed.prt" --mechanical "C:\Users\julianm\Box\DIFAM - delad\ANSYS\case_script.py" --results "results/"

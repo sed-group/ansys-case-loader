@@ -1,4 +1,9 @@
-﻿# encoding: utf-8
+﻿# This is the workbench journal. 
+# It will setup a static structural template, and run a mechanical case script.
+# This journal can be launched from within ANSYS, but it requires several variables to be set beforehand in the designated job directory.
+# Author: Julian Martinsson, julianm@chalmers.se
+
+# encoding: utf-8
 # 2020 R1
 SetScriptVersion(Version="20.1.164")
 
