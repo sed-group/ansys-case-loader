@@ -1,4 +1,4 @@
-# Prerequisits
+# Prerequisites
 - ANSYS
 - Python 3.7 or newer
 - ANSYS "RunWB2.exe" needs to be accessable through the PATH environment variable (for instannce "C:\Program Files\ANSYS Inc\v201\Framework\bin\Win64")
