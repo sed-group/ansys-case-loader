@@ -1,4 +1,4 @@
-# This script is used to start an ANSYS experiment from the command line.
+# This script is used to start an ANSYS experiment from the command line (or as a module).
 # This will launch ANSYS and then run the specified workbench journal
 # Author: Julian Martinsson, julianm@chalmers.se
 
@@ -7,6 +7,7 @@ import argparse
 import tempfile
 import shutil
 from pathlib import Path
+import subprocess
 
 # Parameters
 job_dir_name = 'sed-job-ansys'
@@ -14,13 +15,11 @@ mechanical_var_file = 'mechanical'
 geometry_var_file = 'geometry'
 results_file = 'results.txt'
 
-verbose = False
-
 # Convenient variables
 job_path = fr'{tempfile.gettempdir()}\{job_dir_name}'
 
 
-def run_case(journal_file, mechanical_file, geometry_file, experiment_name, results_destination):
+def run_case(journal_file, mechanical_file, geometry_file, experiment_name, results_destination, verbose=False):
     # Check if job directory exists. Wipe it and create a new one.
     if os.path.isdir(job_path):
         if verbose:
@@ -46,9 +45,13 @@ def run_case(journal_file, mechanical_file, geometry_file, experiment_name, resu
     f.close()
 
     if verbose:
-        print('Turning over job to ANSYS workbench..')
+        print(f'Turning over job to ANSYS workbench with journal: {journal_file}')
 
-    os.system(f'RunWB2.exe -R {journal_file}')
+    try:
+        ansys_completed_process = subprocess.run(f'RunWB2.exe -R {journal_file}', shell=True, check=True, timeout=600)
+        print(f'ANSYS workbench exited with code {str(ansys_completed_process.returncode)}')
+    except subprocess.TimeoutExpired:
+        print('This is taking forever! Pulling the plug.')
 
     # Offload results
     if results_destination is not None:
@@ -77,12 +80,11 @@ if __name__ == "__main__":
     parser.add_argument('--name', type=str, default="ANSYS-EXPERIMENT",
                         help='Name the experiment. Useful for identifying results later.')
     parser.add_argument('--verbose', '-v', action="store_true",
-                        help='Spew out nonsense on stdout')
+                        help='Spew out nonsense on stdout for your entertainment')
 
     args = parser.parse_args()
-    verbose = args.verbose
 
-    if verbose:
+    if args.verbose:
         print(f'Starting experiment {args.name}')
 
-    run_case(args.journal, args.mechanical, args.geometry, args.name, args.results)
+    run_case(args.journal, args.mechanical, args.geometry, args.name, args.results, verbose=args.verbose)
