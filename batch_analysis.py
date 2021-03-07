@@ -42,7 +42,7 @@ if __name__ == "__main__":
     parser.add_argument('--journal', '-j', type=str, default="journal.wbjn",
                         help='journal file path')
     parser.add_argument('--verbose', '-v', action="store_true",
-                        help='Spew out nonsense on stdout')
+                        help='Spew out nonsense on stdout for your entertainment')
 
     args = parser.parse_args()
 
