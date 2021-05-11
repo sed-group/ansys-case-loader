@@ -7,6 +7,8 @@ import tempfile
 # Parameters
 job_dir_name = 'sed-job-ansys'
 results_file = 'results.txt'
+deformation_points = 'deformation_points.txt'
+stress_points = 'stress_points.txt'
 
 element_size = 10   # [mm]
 pinch_tol = 4       # [mm]
@@ -57,8 +59,14 @@ analysis_list.Solution.AddEquivalentStress()
 analysis_list.Solve()
 
 # Extract results
-max_deform = Model.Analyses[0].Solution.Children[1].Maximum      # Maximum deformation
-max_stress = Model.Analyses[0].Solution.Children[2].Maximum      # Maximum stress
+max_deform_solution = Model.Analyses[0].Solution.Children[1]      # Maximum deformation
+max_stress_solution = Model.Analyses[0].Solution.Children[2]      # Maximum stress
+
+# Export results
+max_deform = max_deform_solution.Maximum      # Maximum deformation
+max_stress = max_stress_solution.Maximum      # Maximum stress
+max_deform_solution.ExportToTextFile(job_path + '\\' + deformation_points)
+max_stress_solution.ExportToTextFile(job_path + '\\' + stress_points)
 
 f = open(job_path + '\\' + results_file, 'a')
 f.write('max_deformation='+str(max_deform)+'\n')
