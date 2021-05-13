@@ -2,3 +2,8 @@ results/
 .idea
 *.pyc
 __pycache__/
+*.out
+*.err
+*.log
+*.db
+dummy.dat
