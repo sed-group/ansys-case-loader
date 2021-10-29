@@ -9,6 +9,7 @@ import shutil
 from pathlib import Path
 import subprocess
 
+
 # Parameters
 job_dir_name = 'sed-job-ansys'
 mechanical_var_file = 'mechanical'
@@ -26,7 +27,8 @@ def copy_if_exists(target, destination):
         shutil.copyfile(target, destination)
 
 
-def run_case(journal_file, mechanical_file, geometry_file, experiment_name, results_destination, verbose=False):
+def run_case(journal_file, mechanical_file, geometry_file, experiment_name, results_destination,
+             verbose=False, csv=None):
     # Check if job directory exists. Wipe it and create a new one.
     if os.path.isdir(job_path):
         if verbose:
@@ -76,14 +78,18 @@ def run_case(journal_file, mechanical_file, geometry_file, experiment_name, resu
 
     # Offload results
     if results_destination is not None:
-        results_destination_file_path = fr'{results_destination}\{experiment_name}.txt'
-        results_deformation_points_file_path = fr'{results_destination}\{experiment_name}-def.txt'
-        results_stress_points_file_path = fr'{results_destination}\{experiment_name}-str.txt'
+        point_cloud_data_subdir = "pcd"
+
+        results_destination_file_path = fr'{results_destination}\{experiment_name}.xd'
+        results_deformation_points_file_path = fr'{results_destination}\{point_cloud_data_subdir}\{experiment_name}-def.pcd'
+        results_stress_points_file_path = fr'{results_destination}\{point_cloud_data_subdir}\{experiment_name}-str.pcd'
 
         if verbose:
             print(f'Storing results in {results_destination_file_path}')
 
         Path(results_destination).mkdir(parents=True, exist_ok=True)
+        if point_cloud_data_subdir is not None:
+            Path(f'{results_destination}\{point_cloud_data_subdir}').mkdir(parents=True, exist_ok=True)
 
         copy_if_exists(fr'{job_path}\{results_file}', results_destination_file_path)
         copy_if_exists(fr'{job_path}\{deformation_nodes_file}', results_deformation_points_file_path)
@@ -93,24 +99,33 @@ def run_case(journal_file, mechanical_file, geometry_file, experiment_name, resu
         print('Done.')
 
 
+
+
 if __name__ == "__main__":
+    # Get location of this script to locate default cases and journals
+    script_path = os.path.realpath(__file__)
+    script_dir_path = os.path.dirname(script_path)
+
     parser = argparse.ArgumentParser(description='Run ANSYS simulation')
-    parser.add_argument('--journal', '-j', type=str, default="journal.wbjn",
+    parser.add_argument('--journal', '-j', type=str, default=f"{script_dir_path}/wb_journals/journal.wbjn",
                         help='journal file path')
-    parser.add_argument('--mechanical', '-m', type=str, default="case.py",
+    parser.add_argument('--mechanical', '-m', type=str, default=f"{script_dir_path}/cases/case.py",
                         help='mechanical script file path')
-    parser.add_argument('--geometry', '-g', type=str, default="geometry.prt",
+    parser.add_argument('--geometry', '-g', type=str, required=True,
                         help='Path to geometry')
-    parser.add_argument('--results', '-r', type=str, default="results/",
+    parser.add_argument('--results', '-r', type=str, default=f"{script_dir_path}/../results/",
                         help='Path to results directory.')
     parser.add_argument('--name', type=str, default="ANSYS-EXPERIMENT",
                         help='Name the experiment. Useful for identifying results later.')
     parser.add_argument('--verbose', '-v', action="store_true",
                         help='Spew out nonsense on stdout for your entertainment')
 
+
     args = parser.parse_args()
 
     if args.verbose:
         print(f'Starting experiment {args.name}')
 
-    run_case(args.journal, args.mechanical, args.geometry, args.name, args.results, verbose=args.verbose)
+
+    run_case(args.journal, args.mechanical, args.geometry, args.name, args.results,
+             verbose=args.verbose)

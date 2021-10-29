@@ -3,7 +3,7 @@ import argparse
 import os
 
 
-def find_parameter(content, parameter_name, value_type:str = 'number'):
+def find_parameter(content, parameter_name, value_type: str = 'number'):
     # Regex explanation:
     # Group 1 = parameter name                  (max_deformation=)
     # Group 2 = value, with or without decimal  (\d+\.?\d+))
@@ -49,7 +49,7 @@ def parse_results_dir(path, output='results/results.csv'):
     for file in os.listdir(directory):
         filename = os.fsdecode(file)
 
-        if filename.endswith(".txt") is False:
+        if filename.endswith(".xd") is False:
             continue
 
         file_path = fr'{path}\{filename}'
