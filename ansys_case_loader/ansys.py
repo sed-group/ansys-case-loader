@@ -22,13 +22,20 @@ stress_nodes_file = 'stress_points.txt'
 job_path = fr'{tempfile.gettempdir()}\{job_dir_name}'
 
 
-def copy_if_exists(target, destination):
+def copy_if_exists(target, destination, overwrite=True):
+    if os.path.exists(destination) and overwrite is True:
+        os.remove(destination)
+    else:
+        return False
+
     if os.path.exists(target):
         shutil.copyfile(target, destination)
 
+    return True
+
 
 def run_case(journal_file, mechanical_file, geometry_file, experiment_name, results_destination,
-             verbose=False, csv=None):
+             verbose=False):
     # Check if job directory exists. Wipe it and create a new one.
     if os.path.isdir(job_path):
         if verbose:
@@ -99,8 +106,6 @@ def run_case(journal_file, mechanical_file, geometry_file, experiment_name, resu
         print('Done.')
 
 
-
-
 if __name__ == "__main__":
     # Get location of this script to locate default cases and journals
     script_path = os.path.realpath(__file__)
@@ -120,12 +125,10 @@ if __name__ == "__main__":
     parser.add_argument('--verbose', '-v', action="store_true",
                         help='Spew out nonsense on stdout for your entertainment')
 
-
     args = parser.parse_args()
 
     if args.verbose:
         print(f'Starting experiment {args.name}')
-
 
     run_case(args.journal, args.mechanical, args.geometry, args.name, args.results,
              verbose=args.verbose)

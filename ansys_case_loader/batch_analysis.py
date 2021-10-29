@@ -62,8 +62,8 @@ if __name__ == "__main__":
     if args.verbose:
         print('Initiating batch run.')
 
-    csv = None
+    make_csv = False
     if args.compile_results:
-        csv = f"{args.results}/results.csv"
+        make_csv = True
 
-    batch_run(args.geodir, args.journal, args.mechanical, args.results, verbose=args.verbose, csv=csv)
+    batch_run(args.geodir, args.journal, args.mechanical, args.results, verbose=args.verbose, csv=make_csv)
