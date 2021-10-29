@@ -2,7 +2,7 @@
 # This will launch ANSYS and then run the specified workbench journal
 # Author: Julian Martinsson, julianm@chalmers.se
 
-from ansys import run_case
+from ansys_case_loader.ansys import run_case
 
 import argparse
 import os
