@@ -1,9 +1,10 @@
 import re
 import argparse
 import os
+import datetime as dt
 
 
-def find_parameter(content, parameter_name, value_type:str = 'number'):
+def find_parameter(content, parameter_name, value_type: str = 'number'):
     # Regex explanation:
     # Group 1 = parameter name                  (max_deformation=)
     # Group 2 = value, with or without decimal  (\d+\.?\d+))
@@ -26,16 +27,23 @@ def parse_results_file(path, csv_target):
     content = f.read()
     f.close()
 
+    date_str = dt.datetime.fromtimestamp(os.path.getmtime(path)).strftime("%d/%m/%Y %H:%M:%S")
     experiment_name = find_parameter(content, 'name', 'string')
     max_deformation = find_parameter(content, 'max_deformation', 'number')
+    max_stress = find_parameter(content, 'max_stress', 'number')
 
     if max_deformation:
         print(f'{experiment_name}\tmax_deformation = {max_deformation}')
     else:
         print(f'No value for {path}')
 
+    # If the file is new, then create a spreadsheet header
+    if os.path.exists(csv_target) is False:
+        f = open(csv_target, 'w')
+        f.write(f'Date\tExperiment Name\tMax Deformation\tMax Stress\n')
+
     f = open(csv_target, 'a')
-    f.write(f'{experiment_name}\t{max_deformation}\n')
+    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\t{max_stress}\n')
     f.close()
 
 
@@ -49,7 +57,7 @@ def parse_results_dir(path, output='results/results.csv'):
     for file in os.listdir(directory):
         filename = os.fsdecode(file)
 
-        if filename.endswith(".txt") is False:
+        if filename.endswith(".xd") is False:
             continue
 
         file_path = fr'{path}\{filename}'
