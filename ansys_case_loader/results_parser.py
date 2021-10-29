@@ -27,9 +27,10 @@ def parse_results_file(path, csv_target):
     content = f.read()
     f.close()
 
-    date_str = dt.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    date_str = dt.datetime.fromtimestamp(os.path.getmtime(path)).strftime("%d/%m/%Y %H:%M:%S")
     experiment_name = find_parameter(content, 'name', 'string')
     max_deformation = find_parameter(content, 'max_deformation', 'number')
+    max_stress = find_parameter(content, 'max_stress', 'number')
 
     if max_deformation:
         print(f'{experiment_name}\tmax_deformation = {max_deformation}')
@@ -39,10 +40,10 @@ def parse_results_file(path, csv_target):
     # If the file is new, then create a spreadsheet header
     if os.path.exists(csv_target) is False:
         f = open(csv_target, 'w')
-        f.write(f'Date\tExperiment Name\tMax Deformation\n')
+        f.write(f'Date\tExperiment Name\tMax Deformation\tMax Stress\n')
 
     f = open(csv_target, 'a')
-    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\n')
+    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\t{max_stress}\n')
     f.close()
 
 
