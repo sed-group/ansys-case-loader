@@ -22,12 +22,7 @@ stress_nodes_file = 'stress_points.txt'
 job_path = fr'{tempfile.gettempdir()}\{job_dir_name}'
 
 
-def copy_if_exists(target, destination, overwrite=True):
-    if os.path.exists(destination) and overwrite is True:
-        os.remove(destination)
-    else:
-        return False
-
+def copy_if_exists(target, destination):
     if os.path.exists(target):
         shutil.copyfile(target, destination)
 
