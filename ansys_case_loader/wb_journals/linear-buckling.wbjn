@@ -1,0 +1,75 @@
+# encoding: utf-8
+# 2020 R1
+SetScriptVersion(Version="20.1.164")
+
+import tempfile
+
+
+# Parameters:
+job_dir_name = 'sed-job-ansys'
+mechanical_var_file = 'mechanical'
+geometry_var_file = 'geometry'
+
+# Convenient variables
+job_path = tempfile.gettempdir() + '\\' + job_dir_name
+
+f = open(job_path + '\\' + geometry_var_file, 'r')
+geometry_path = f.read()
+f.close()
+
+f = open(job_path + '\\' + mechanical_var_file, 'r')
+mech_script_path = f.read()
+f.close()
+
+# Load workbench templates
+template1 = GetTemplate(
+    TemplateName="Static Structural",
+    Solver="ANSYS")
+system1 = template1.CreateSystem()
+
+template2 = GetTemplate(
+    TemplateName="Linear Buckling",
+    Solver="ANSYS")
+
+# Connect Static Structural template to Linear Buckling template
+engineeringDataComponent1 = system1.GetComponent(Name="Engineering Data")
+geometryComponent1 = system1.GetComponent(Name="Geometry")
+modelComponent1 = system1.GetComponent(Name="Model")
+solutionComponent1 = system1.GetComponent(Name="Solution")
+componentTemplate1 = GetComponentTemplate(Name="SimulationSetupCellTemplate_StructuralBucklingANSYS")
+system2 = template2.CreateSystem(
+    ComponentsToShare=[engineeringDataComponent1, geometryComponent1, modelComponent1],
+    DataTransferFrom=[Set(FromComponent=solutionComponent1, TransferName=None, ToComponentTemplate=componentTemplate1)],
+    Position="Right",
+    RelativeTo=system1)
+
+# Load material
+engineeringData1 = system1.GetContainer(ComponentName="Engineering Data")
+matl1 = engineeringData1.ImportMaterial(
+    Name="Inconel 718",
+    Source="Additive_Manufacturing_Materials.xml")
+
+# Load geometry
+geometry1 = system1.GetContainer(ComponentName="Geometry")
+geometry1.SetFile(
+    FilePath=GetAbsoluteUserPathName(geometry_path),
+    PlugInName="Unigraphics[50564]")
+
+# Activate named selections in the geometry container
+geometryProperties1 = geometry1.GetGeometryProperties()
+geometryProperties1.GeometryImportNamedSelections = True
+
+# Open model container. Needs to be refreshed first.
+modelComponent1 = system1.GetComponent(Name="Model")
+modelComponent1.Refresh()
+model1 = system1.GetContainer(ComponentName="Model")
+model1.Edit()   # This command opens the container, though I think this could be avoided somehow to improve performance.
+
+# Read script-file and extract contents
+mechanical_script_file = open(mech_script_path, "r")
+mechanical_script = mechanical_script_file.read()
+mechanical_script_file.close()
+
+# Send the script to the ANSYS model
+model1.SendCommand(Language='Python', Command = mechanical_script)
+model1.Exit()
