@@ -27,7 +27,7 @@ def batch_run(geometry_directory, journal, mechanical_script, results_directory,
 
         run_name = filename_no_ext
 
-        if os.path.isfile(results_directory + '/' + filename_no_ext + '.txt') and skip_completed:
+        if os.path.isfile(results_directory + '/' + filename_no_ext + '.xd') and skip_completed:
             if verbose:
                 print(f'{filename} has already been processed. Skip.')
             continue
