@@ -8,10 +8,11 @@ def find_parameter(content, parameter_name, value_type: str = 'number'):
     # Regex explanation:
     # Group 1 = parameter name                  (max_deformation=)
     # Group 2 = value, with or without decimal  (\d+\.?\d+))
-    # Group 3 = unit                            \s\[(.+)\]\n
+    # Group 3 = Optional unit capture group
+    # Group 4 = unit                            \s\[(.+)\]\n
     re_results = None
     if str.lower(value_type) == 'number':
-        re_results = re.search(rf'({parameter_name})=(\d+\.?\d+)\s\[(.+)\]\n', content, re.IGNORECASE)
+        re_results = re.search(rf'({parameter_name})=(-?\d+\.?\d+)(\s\[(.+)\])?\n', content, re.IGNORECASE)
     elif str.lower(value_type) == 'string':
         re_results = re.search(rf'({parameter_name})=(.+)\n', content, re.IGNORECASE)
 
@@ -29,8 +30,9 @@ def parse_results_file(path, csv_target):
 
     date_str = dt.datetime.fromtimestamp(os.path.getmtime(path)).strftime("%d/%m/%Y %H:%M:%S")
     experiment_name = find_parameter(content, 'name', 'string')
-    max_deformation = find_parameter(content, 'max_deformation', 'number')
-    max_stress = find_parameter(content, 'max_stress', 'number')
+    max_deformation = find_parameter(content, 'ss_max_deformation', 'number')
+    max_stress = find_parameter(content, 'ss_max_stress', 'number')
+    buckling_load_multiplier = find_parameter(content, 'eb_load_multiplier', 'number')
 
     if max_deformation:
         print(f'{experiment_name}\tmax_deformation = {max_deformation}')
@@ -40,10 +42,10 @@ def parse_results_file(path, csv_target):
     # If the file is new, then create a spreadsheet header
     if os.path.exists(csv_target) is False:
         f = open(csv_target, 'w')
-        f.write(f'Date\tExperiment Name\tMax Deformation\tMax Stress\n')
+        f.write(f'Date\tExperiment Name\tMax Deformation\tMax Stress\tBuckling Load Multiplier\n')
 
     f = open(csv_target, 'a')
-    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\t{max_stress}\n')
+    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\t{max_stress}\t{buckling_load_multiplier}\n')
     f.close()
 
 
