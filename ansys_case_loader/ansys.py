@@ -1,6 +1,6 @@
 # This script is used to start an ANSYS experiment from the command line (or as a module).
 # This will launch ANSYS and then run the specified workbench journal
-# Author: Julian Martinsson, julianm@chalmers.se
+# Author: Julian Martinsson Bonde, julianm@chalmers.se
 
 import os
 import argparse

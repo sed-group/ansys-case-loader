@@ -1,3 +1,6 @@
+# This script is used to parse the results generated from the analysis
+# Author: Julian Martinsson Bonde, julianm@chalmers.se
+
 import re
 import argparse
 import os
