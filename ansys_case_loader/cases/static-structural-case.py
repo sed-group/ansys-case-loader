@@ -69,6 +69,6 @@ max_deform_solution.ExportToTextFile(job_path + '\\' + deformation_points)
 max_stress_solution.ExportToTextFile(job_path + '\\' + stress_points)
 
 f = open(job_path + '\\' + results_file, 'a')
-f.write('max_deformation='+str(max_deform)+'\n')
-f.write('max_stress='+str(max_stress)+'\n')
+f.write('ss_max_deformation='+str(max_deform)+'\n')
+f.write('ss_max_stress='+str(max_stress)+'\n')
 f.close()
