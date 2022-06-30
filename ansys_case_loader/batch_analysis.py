@@ -1,6 +1,6 @@
 # This script is used to start a batch of ANSYS experiments from the command line (or as a module).
 # This will launch ANSYS and then run the specified workbench journal
-# Author: Julian Martinsson, julianm@chalmers.se
+# Author: Julian Martinsson Bonde, julianm@chalmers.se
 
 from ansys_case_loader.ansys import run_case
 from ansys_case_loader.results_parser import parse_results_dir

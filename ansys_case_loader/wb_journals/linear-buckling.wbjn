@@ -1,3 +1,6 @@
+# Workbench journal for linear buckling
+# Author: Julian Martinsson Bonde, julianm@chalmers.se
+
 # encoding: utf-8
 # 2020 R1
 SetScriptVersion(Version="20.1.164")
