@@ -14,6 +14,7 @@ element_size = 10   # [mm]
 pinch_tol = 4       # [mm]
 onset_vane_temperature = 650    # deg C
 onset_outside_temperature = 20  # deg C
+onset_inner_temperature = 20    # deg C
 material_name = "Inconel 718"   # The specified material needs to be present in the template
 
 # Convenient variables
@@ -52,6 +53,11 @@ vane_temp.Magnitude.Output.SetDiscreteValue(0, Quantity(onset_vane_temperature, 
 outer_temp = thermal_analysis.AddTemperature()
 outer_temp.Location = DataModel.GetObjectsByName("NS_outer_outside_surface")[0]
 outer_temp.Magnitude.Output.SetDiscreteValue(0, Quantity(onset_outside_temperature, "C"))
+
+# Apply temperature to inner hub 
+inner_temp = thermal_analysis.AddTemperature()
+inner_temp.Location = DataModel.GetObjectsByName("NS_hub_inner_face")[0]
+inner_temp.Magnitude.Output.SetDiscreteValue(0, Quantity(onset_inner_temperature, "C"))
 
 # Apply a fixed support
 fixed_support = structural_analysis.AddFixedSupport()
