@@ -31,11 +31,14 @@ def parse_results_file(path, csv_target):
     content = f.read()
     f.close()
 
+    # This is stupid and should be generalized but I am too lazy
     date_str = dt.datetime.fromtimestamp(os.path.getmtime(path)).strftime("%d/%m/%Y %H:%M:%S")
     experiment_name = find_parameter(content, 'name', 'string')
     max_deformation = find_parameter(content, 'ss_max_deformation', 'number')
     max_stress = find_parameter(content, 'ss_max_stress', 'number')
     buckling_load_multiplier = find_parameter(content, 'eb_load_multiplier', 'number')
+    th_max_deformation = find_parameter(content, 'th_max_deformation')
+    th_max_stress = find_parameter(content, 'th_max_stress')
 
     if max_deformation:
         print(f'{experiment_name}\tmax_deformation = {max_deformation}')
@@ -45,10 +48,10 @@ def parse_results_file(path, csv_target):
     # If the file is new, then create a spreadsheet header
     if os.path.exists(csv_target) is False:
         f = open(csv_target, 'w')
-        f.write(f'Date\tExperiment Name\tMax Deformation\tMax Stress\tBuckling Load Multiplier\n')
+        f.write(f'Date\tExperiment Name\tMax Deformation\tMax Stress\tBuckling Load Multiplier\tThermal deformation\tThermal stress\n')
 
     f = open(csv_target, 'a')
-    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\t{max_stress}\t{buckling_load_multiplier}\n')
+    f.write(f'{date_str}\t{experiment_name}\t{max_deformation}\t{max_stress}\t{buckling_load_multiplier}\t{th_max_deformation}\t{th_max_stress}\n')
     f.close()
 
 
