@@ -13,8 +13,8 @@ stress_points = 'stress_points.txt'
 element_size = 10   # [mm]
 pinch_tol = 4       # [mm]
 onset_vane_temperature = 650    # deg C
-onset_outside_temperature = 20  # deg C
-onset_inner_temperature = 20    # deg C
+onset_outside_temperature = 300  # deg C
+onset_inner_temperature = 450    # deg C
 material_name = "Inconel 718"   # The specified material needs to be present in the template
 
 # Convenient variables
