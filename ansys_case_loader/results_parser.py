@@ -34,7 +34,7 @@ def parse_results_file(path, csv_target):
     # This is stupid and should be generalized but I am too lazy
     date_str = dt.datetime.fromtimestamp(os.path.getmtime(path)).strftime("%d/%m/%Y %H:%M:%S")
     experiment_name = find_parameter(content, 'name', 'string')
-    max_deformation = find_parameter(content, 'ss_max_deformation', 'number')
+    max_deformation = find_parameter(content, 'ss_max_deformation', 'string')
     max_stress = find_parameter(content, 'ss_max_stress', 'number')
     buckling_load_multiplier = find_parameter(content, 'eb_load_multiplier', 'number')
     th_max_deformation = find_parameter(content, 'th_max_deformation')
